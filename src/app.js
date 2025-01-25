@@ -2,12 +2,10 @@ const express = require("express");
 
 const app = express();
 
-app.get("/", (req, res) => {
-  res.send("hello word from devtinder");
-});
-
-app.get("/api", (req, res) => {
-  res.send("hello word from api");
+app.get("/api/:userID", (req, res) => {
+  console.log("reqq", req.query);
+  console.log("req params", req.params);
+  res.send("Hello World from API");
 });
 
 app.listen(7777, () => {
