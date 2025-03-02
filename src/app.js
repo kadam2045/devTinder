@@ -8,8 +8,6 @@ const app = express();
 
 app.use(express.json());
 
-//how can i handle missing property in api how can i thorw error in response
-
 app.post("/signup", async (req, res) => {
   try {
     //  first check validation
@@ -37,6 +35,27 @@ app.post("/signup", async (req, res) => {
   } catch (error) {
     res.status(500).send("error creating user" + error.message);
     // throw new Error("error creating user" + error.message);
+  }
+});
+
+app.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    // check if email is present or not
+    const isUser = await userModel.findOne({ email: email });
+
+    if (!isUser) {
+      throw new Error("Invalid credentional");
+    }
+    //now compare passoword
+
+    const isPassword = await bcrypt.compare(password, isUser?.password);
+    if (!isPassword) {
+      throw new Error("Passowrd is wrong");
+    }
+    res.status(200).send("Login sucessfully");
+  } catch (error) {
+    res.status(500).send("erro login: " + error);
   }
 });
 
