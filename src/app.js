@@ -3,10 +3,13 @@ const connectDB = require("./config/database");
 const userModel = require("./models/user");
 const { valdiationCheck } = require("./utils/validationCheck");
 const bcrypt = require("bcrypt");
-
+const cookie = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+const userAuth = require("../src/middleware/userAuth");
 const app = express();
 
 app.use(express.json());
+app.use(cookie());
 
 app.post("/signup", async (req, res) => {
   try {
@@ -34,7 +37,6 @@ app.post("/signup", async (req, res) => {
     res.status(201).send("user created successfully");
   } catch (error) {
     res.status(500).send("error creating user" + error.message);
-    // throw new Error("error creating user" + error.message);
   }
 });
 
@@ -53,9 +55,28 @@ app.post("/login", async (req, res) => {
     if (!isPassword) {
       throw new Error("Passowrd is wrong");
     }
-    res.status(200).send("Login sucessfully");
+    if (isPassword) {
+      //genrate token
+      const token = await isUser.getJWT();
+
+      res.cookie("token", token, {
+        expires: new Date(Date.now() + 900000),
+        httpOnly: true,
+      });
+      res.status(200).send("Login sucessfully");
+    }
   } catch (error) {
     res.status(500).send("erro login: " + error);
+  }
+});
+
+app.get("/profile", userAuth, async (req, res) => {
+  try {
+    const user = req.user;
+
+    res.send(user);
+  } catch (error) {
+    res.status(500).send("Error on getting profile: " + error);
   }
 });
 
@@ -100,9 +121,9 @@ app.put("/updateUser/:id", async (req, res) => {
     const isUpdatedAllowed = Object.keys(data).every((k) =>
       allowed_field.includes(k)
     );
-    console.log("isUpdateee", isUpdatedAllowed);
+
     const isSkill = data.skills.length < 10;
-    console.log("issSkillll", isSkill);
+
     if (!isSkill) {
       throw new Error("Skills cannot be more than 10");
     }
