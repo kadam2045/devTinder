@@ -18,6 +18,24 @@ const valdiationCheck = (data) => {
   }
 };
 
+const validateEditProfile = (req) => {
+  try {
+    const isUpdatedAllowed = [
+      "firstName",
+      "lastName",
+      "age",
+      "skills",
+      "about",
+    ];
+
+    const isValidEditKeys = Object.keys(req.body).every((field) =>
+      isUpdatedAllowed.includes(field)
+    );
+    return isValidEditKeys;
+  } catch (error) {}
+};
+
 module.exports = {
   valdiationCheck,
+  validateEditProfile,
 };
