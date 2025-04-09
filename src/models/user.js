@@ -72,8 +72,9 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+UserSchema.index({ email: 1 });
 UserSchema.methods.getJWT = async function () {
-  const user = this;
+  const user = this; // if you write arrow  function this will not work
   const token = await jwt.sign({ _id: user._id }, "shubhamsecretkey", {
     expiresIn: "1d",
   });

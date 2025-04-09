@@ -4,12 +4,16 @@ const cookie = require("cookie-parser");
 const app = express();
 const authRoutes = require("../src/routes/authRouter");
 const profileRoutes = require("../src/routes/profileRouter");
+const connectionRequest = require("./routes/connectionRequestRouter");
+const userRequestRouter = require("./routes/userRouter");
 
 app.use(express.json());
 app.use(cookie());
 
 app.use("/", authRoutes);
 app.use("/", profileRoutes);
+app.use("/", connectionRequest);
+app.use("/", userRequestRouter);
 
 connectDB() // first db connect then server on
   .then(() => {
