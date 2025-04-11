@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const userAuth = require("../middleware/userAuth");
 const connectionRequestModel = require("../models/connectionRequest");
+const userModel = require("../models/user");
+const { set } = require("mongoose");
 
 router.get("/user/request/recived", userAuth, async (req, res) => {
   const LoggedInUser = req.user;
@@ -56,6 +58,50 @@ router.get("/user/connection", userAuth, async (req, res) => {
     });
   } catch (error) {
     res.status(500).send("Error: " + error);
+  }
+});
+
+router.get("/user/feed", userAuth, async (req, res) => {
+  try {
+    const loggedInUser = req.user;
+    const page = req.query.page || 1;
+    let limit = req.query.limit || 10;
+    limit = limit > 50 ? 50 : limit;
+    const skip = (page - 1) * limit;
+
+    const connectionRequestData = await connectionRequestModel
+      .find({
+        $or: [
+          { fromUserId: loggedInUser?._id },
+          { toUserId: loggedInUser?._id },
+        ],
+      })
+      .select(["toUserId", "fromUserId"]);
+
+    const hideUserFromFeed = new Set();
+
+    const getFeedData = connectionRequestData.forEach((row) => {
+      hideUserFromFeed.add(row.toUserId.toString());
+      hideUserFromFeed.add(row.fromUserId.toString());
+    });
+
+    const getUserData = await userModel
+      .find({
+        $and: [
+          { _id: { $nin: Array.from(hideUserFromFeed) } },
+
+          { _id: { $ne: loggedInUser?._id } },
+        ],
+      })
+      .skip(skip)
+      .limit(limit);
+
+    res.json({
+      message: "user fetch successfuly",
+      data: getUserData,
+    });
+  } catch (error) {
+    res.status(500).send("error :" + error);
   }
 });
 

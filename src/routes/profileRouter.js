@@ -91,7 +91,7 @@ router.put("/updateUser/:id", async (req, res) => {
   }
 });
 
-router.delete("/delete", async (req, res) => {
+router.delete("/delete", async (req, res) => { 
   const userId = req.params.id;
   try {
     await userModel.deleteMany();
@@ -111,4 +111,8 @@ router.delete("/delete/:id", async (req, res) => {
   }
 });
 
+
+
 module.exports = router;
+
+ 
