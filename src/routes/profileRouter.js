@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const userModel = require("../models/user");
 const userAuth = require("../middleware/userAuth");
-const validateEditProfile = require("../utils/validationCheck");
+const {validateEditProfile} = require("../utils/validationCheck");
 
 router.get("/profile", userAuth, async (req, res) => {
   try {
