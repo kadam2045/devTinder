@@ -26,13 +26,16 @@ const validateEditProfile = (req) => {
       "age",
       "skills",
       "about",
+      "profileImage",
     ];
 
     const isValidEditKeys = Object.keys(req.body).every((field) =>
       isUpdatedAllowed.includes(field)
     );
     return isValidEditKeys;
-  } catch (error) {}
+  } catch (error) {
+    console.log("error", error);
+  }
 };
 
 module.exports = {

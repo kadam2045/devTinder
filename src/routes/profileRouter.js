@@ -17,10 +17,14 @@ router.get("/profile", userAuth, async (req, res) => {
 router.put("/profile/edit", userAuth, async (req, res) => {
   try {
     if (!validateEditProfile(req)) {
+      
       throw new Error("Invalid Edit request");
     }
     const loggedInUser = req.user;
+    
+
     Object.keys(req.body).forEach((key) => (loggedInUser[key] = req.body[key]));
+
     await loggedInUser.save();
     res.json({
       message: ` ${loggedInUser.firstName}, your profile updated successfully`,
@@ -68,6 +72,7 @@ router.put("/updateUser/:id", async (req, res) => {
       "phone",
       "skills",
       "password",
+      "profileImage",
     ];
     const isUpdatedAllowed = Object.keys(data).every((k) =>
       allowed_field.includes(k)
@@ -91,7 +96,7 @@ router.put("/updateUser/:id", async (req, res) => {
   }
 });
 
-router.delete("/delete", async (req, res) => { 
+router.delete("/delete", async (req, res) => {
   const userId = req.params.id;
   try {
     await userModel.deleteMany();
@@ -111,8 +116,4 @@ router.delete("/delete/:id", async (req, res) => {
   }
 });
 
-
-
 module.exports = router;
-
- 

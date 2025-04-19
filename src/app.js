@@ -6,7 +6,9 @@ const authRoutes = require("../src/routes/authRouter");
 const profileRoutes = require("../src/routes/profileRouter");
 const connectionRequest = require("./routes/connectionRequestRouter");
 const userRequestRouter = require("./routes/userRouter");
+const cors = require("cors")
 
+app.use(cors());
 app.use(express.json());
 app.use(cookie());
 

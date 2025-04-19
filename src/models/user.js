@@ -64,6 +64,10 @@ const UserSchema = new mongoose.Schema(
         }
       },
     },
+    profileImage: {
+      type: String,
+      default: "https://via.placeholder.com/150",
+    },
     skills: {
       type: [String],
       // default: ["Javascript", "React", "Node", "MongoDB"],
