@@ -27,9 +27,19 @@ router.post("/signup", async (req, res) => {
     });
 
     await userData.save(userData);
+    const token = await userData.getJWT();
 
-    res.status(201).send("user created successfully");
+    res.cookie("token", token, {
+      expires: new Date(Date.now() + 6000000),
+      httpOnly: true,
+    });
+
+    res.status(201).json({
+      message: "user created successfully",
+      data: userData,
+    });
   } catch (error) {
+    console.log("error", error);
     res.status(500).send("error creating user" + error.message);
   }
 });
@@ -37,9 +47,11 @@ router.post("/signup", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
+    
     // check if email is present or not
-    const isUser = await userModel.findOne({ email: email });
-
+    const isUser = await userModel.findOne({ email });
+  
+    
     if (!isUser) {
       throw new Error("Invalid credentional");
     }
@@ -60,7 +72,7 @@ router.post("/login", async (req, res) => {
 
       res.status(200).json({
         message: "Login Successful",
-        data:isUser,
+        data: isUser,
       });
     }
   } catch (error) {
@@ -93,8 +105,6 @@ router.post("/forgotPassword", async (req, res) => {
       { email },
       { password: hashPassword }
     );
-
-    console.log("updatedPassword", updatedPassword);
 
     res.status(200).send(`Password updated successfully `);
   } catch (error) {

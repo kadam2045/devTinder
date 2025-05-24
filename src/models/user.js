@@ -39,7 +39,7 @@ const UserSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      required: true,
+      required: false,
     },
     about: {
       type: String,
@@ -66,7 +66,7 @@ const UserSchema = new mongoose.Schema(
     },
     profileImage: {
       type: String,
-      default: "https://via.placeholder.com/150",
+      default: "https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-859.jpg?ga=GA1.1.1227741978.1745398804&semt=ais_hybrid&w=740",
     },
     skills: {
       type: [String],

@@ -14,7 +14,7 @@ router.get("/user/request/recived", userAuth, async (req, res) => {
         toUserId: LoggedInUser,
         status: "interested",
       })
-      .populate("fromUserId", ["firstName", "lastName", "age", "gender"])
+      .populate("fromUserId", ["firstName", "lastName", "age", "gender", "profileImage"])
       .populate("toUserId", ["firstName"]);
 
     if (isrecivedData.length === 0) {
@@ -43,10 +43,11 @@ router.get("/user/connection", userAuth, async (req, res) => {
           { fromUserId: loggedInUser?._id, status: "accepted" },
         ],
       })
-      .populate("fromUserId", ["firstName", "lastName"])
-      .populate("toUserId", ["firstName", "lastName"]);
+      .populate("fromUserId", ["firstName", "lastName" , "profileImage"])
+      .populate("toUserId", ["firstName", "lastName" ,"profileImage"]);
 
-    const data2 = getUserConnectionData.map((row) => {
+     
+    const data = getUserConnectionData.map((row) => {
       if (row.fromUserId._id.toString() === loggedInUser?._id.toString()) {
         return row?.toUserId;
       }
@@ -54,7 +55,7 @@ router.get("/user/connection", userAuth, async (req, res) => {
     });
 
     res.json({
-      data2,
+      data,
     });
   } catch (error) {
     res.status(500).send("Error: " + error);
@@ -66,8 +67,9 @@ router.get("/user/feed", userAuth, async (req, res) => {
     const loggedInUser = req.user;
     const page = req.query.page || 1;
     let limit = req.query.limit || 10;
+
     limit = limit > 50 ? 50 : limit;
-    const skip = (page - 1) * limit;
+    const skip = (page - 1) * limit; // formula
 
     const connectionRequestData = await connectionRequestModel
       .find({
@@ -96,7 +98,8 @@ router.get("/user/feed", userAuth, async (req, res) => {
       .skip(skip)
       .limit(limit);
 
-    res.json({
+      
+   return res.json({
       message: "user fetch successfuly",
       data: getUserData,
     });

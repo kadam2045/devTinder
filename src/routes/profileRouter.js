@@ -63,7 +63,6 @@ router.get("/feed/:id", async (req, res) => {
 router.put("/updateUser/:id", async (req, res) => {
   const userId = req.params.id;
   const data = req.body;
-
   try {
     const allowed_field = [
       "email",
@@ -81,7 +80,7 @@ router.put("/updateUser/:id", async (req, res) => {
     const isSkill = data.skills.length < 10;
 
     if (!isSkill) {
-      throw new Error("Skills cannot be more than 10");
+       throw new Error("Skills cannot be more than 10");
     }
     if (!isUpdatedAllowed) {
       throw new Error("Sorry!! you cant update this field");

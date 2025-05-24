@@ -3,10 +3,10 @@ const jwt = require("jsonwebtoken");
 
 const userAuth = async (req, res, next) => {
   try {
-    const { token } = req.cookies;
+    const { token } = req.cookies|| req.headers;
 
     if (!token) {
-      throw new Error("InValid token please login again for token");
+     return res.status(401).send("token is not valid");
     }
 
     const verifyToken = jwt.verify(token, "shubhamsecretkey");
