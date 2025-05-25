@@ -7,6 +7,8 @@ const profileRoutes = require("../src/routes/profileRouter");
 const connectionRequest = require("./routes/connectionRequestRouter");
 const userRequestRouter = require("./routes/userRouter");
 const cors = require("cors")
+require('dotenv').config()
+
 
 app.use(cors({
   origin:"http://localhost:5173",
@@ -14,7 +16,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
-app.use(cookie());
+app.use(cookie());  
 
 app.use("/", authRoutes);
 app.use("/", profileRoutes);

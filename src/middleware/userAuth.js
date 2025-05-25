@@ -9,7 +9,7 @@ const userAuth = async (req, res, next) => {
      return res.status(401).send("token is not valid");
     }
 
-    const verifyToken = jwt.verify(token, "shubhamsecretkey");
+    const verifyToken = jwt.verify(token, process.env.SECRET_KEY);
     const { _id } = verifyToken;
     //now as we get id from token now we need to check is this user is in database
     const user = await userModel.findById(_id);
